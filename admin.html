@@ -1,1 +1,55 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة تحكم القمة</title><link rel="stylesheet" href="style.css"></head><body><header><div class="logo">▲ لوحة تحكم القمة</div><nav><a href="index.html">المتجر</a></nav></header><main class="admin"><div class="adminTop"><h1>لوحة التحكم</h1><button class="danger" onclick="resetData()">إعادة البيانات التجريبية</button></div><div class="stats"><div><b id="statProducts">0</b><span>منتج</span></div><div><b id="statOrders">0</b><span>طلبات</span></div><div><b id="statBalance">0.00$</b><span>رصيد تجريبي</span></div></div><section class="panel"><h2>إضافة منتج</h2><div class="formGrid"><input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" step="0.01" placeholder="السعر بالدولار"><input id="pCat" placeholder="القسم"><input id="pImg" placeholder="رابط صورة المنتج"><textarea id="pDesc" placeholder="وصف المنتج"></textarea><button class="primary" onclick="addProduct()">إضافة المنتج</button></div></section><section class="panel"><h2>المنتجات الحالية</h2><div id="adminProducts"></div></section><section class="panel"><h2>الطلبات</h2><div id="orders"></div></section></main><script src="admin.js"></script></body></html>
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ادارة القمة</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}body{background:#f2f2f7;margin:0;padding:12px}
+.box{max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:20px}
+input{width:100%;padding:13px;margin:7px 0;border:1px solid #ddd;border-radius:10px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;color:#fff;font-weight:bold;margin-top:10px}
+.add{background:#6C2EB5}.prod{display:flex;gap:10px;align-items:center;border:1px solid #eee;padding:10px;border-radius:12px;margin:8px 0}
+.prod img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+.preview{width:100%;height:200px;object-fit:cover;border-radius:12px;display:none;margin:10px 0;border:2px dashed #6C2EB5}
+</style>
+</head>
+<body>
+<div class="box">
+<h2 style="text-align:center;color:#6C2EB5">👑 اضافة منتج - من جوالك مباشر</h2>
+
+<input id="name" placeholder="اسم المنتج - مثلا عباية فخمة">
+<input id="price" placeholder="السعر - مثلا 15$">
+<label style="background:#eee;display:block;padding:15px;border-radius:10px;text-align:center;margin:10px 0">📸 اضغط هنا واختار صورة من جوالك<input type="file" id="file" accept="image/*" style="display:none"></label>
+<img id="preview" class="preview">
+<p style="text-align:center">- أو -</p>
+<input id="img" placeholder="اذا عندك رابط صورة الصقو هون (اختياري)">
+
+<button class="btn add" onclick="addProd()">+ حفظ المنتج</button>
+<div id="list"></div>
+<a href="index.html" style="display:block;text-align:center;margin-top:20px;background:#111;color:#fff;padding:12px;border-radius:12px;text-decoration:none">🛍️ فتح المتجر</a>
+</div>
+<script>
+let products=JSON.parse(localStorage.getItem('alqima_products')||'[]');
+let currentImg=""; let editIndex=-1;
+file.onchange=e=>{
+let r=new FileReader();
+r.onload=()=>{currentImg=r.result; preview.src=currentImg; preview.style.display='block'; img.value=currentImg}
+r.readAsDataURL(e.target.files[0]);
+}
+img.oninput=()=>{currentImg=img.value; preview.src=currentImg; preview.style.display='block'}
+function render(){list.innerHTML='';products.forEach((p,i)=>{list.innerHTML+=`<div class="prod"><img src="${p.img}"><div style="flex:1"><b>${p.name}</b><br>${p.price}</div><button onclick="editProd(${i})">تعديل</button><button onclick="delProd(${i})" style="background:#ff3b30;color:#fff;border:none;padding:6px 10px;border-radius:6px">حذف</button></div>`})}
+function addProd(){
+let n=name.value.trim(), pr=price.value.trim();
+if(!n||!pr||!currentImg) return alert('عبي الاسم والسعر واختار صورة');
+let prod={name:n,price:pr,img:currentImg};
+if(editIndex>-1){products[editIndex]=prod; editIndex=-1} else products.push(prod);
+localStorage.setItem('alqima_products',JSON.stringify(products));
+name.value=price.value=img.value=""; currentImg=""; preview.style.display='none'; file.value="";
+render(); alert('تم الحفظ ✅');
+}
+function delProd(i){if(confirm('تحذف؟')){products.splice(i,1);localStorage.setItem('alqima_products',JSON.stringify(products));render()}}
+function editProd(i){let p=products[i]; name.value=p.name; price.value=p.price; img.value=p.img; currentImg=p.img; preview.src=p.img; preview.style.display='block'; editIndex=i; window.scrollTo(0,0)}
+render();
+</script>
+</body>
+</html>
