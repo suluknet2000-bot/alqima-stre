@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>متجر القمة</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#f8f5ff}
+header{background:#6C2EB5;color:#fff;padding:20px;text-align:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;max-width:800px;margin:auto}
+.card{background:#fff;border-radius:16px;overflow:hidden}
+.card img{width:100%;height:180px;object-fit:cover}
+.info{padding:10px}.btn{background:#25D366;color:#fff;display:block;text-align:center;padding:10px;border-radius:10px;text-decoration:none;margin-top:8px}
+</style>
+</head>
+<body>
+<header><h1>متجر القمة 👑</h1></header>
+<div id="grid" class="grid"></div>
+<script>
+let p=JSON.parse(localStorage.getItem('alqima_products')||'[]');
+if(p.length==0){p=[{name:"عباية فخمة",price:"15$",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400"}]}
+let g=document.getElementById('grid');
+g.innerHTML='';p.forEach(x=>{g.innerHTML+=`<div class="card"><img src="${x.img}"><div class="info"><b>${x.name}</b><div>${x.price}</div><a class="btn" href="https://wa.me/905316488110?text=بدي ${x.name}" target="_blank">طلب واتساب</a></div></div>`});
+</script>
+</body>
+</html>
