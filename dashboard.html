@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الادارة</title>
+<style>*{box-sizing:border-box;font-family:system-ui}body{padding:15px;background:#eee}.box{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:15px}input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px}button{width:100%;padding:12px;background:#6C2EB5;color:#fff;border:none;border-radius:8px;margin-top:8px}.prod{display:flex;gap:10px;border:1px solid #eee;padding:8px;margin:6px 0;border-radius:8px;align-items:center}.prod img{width:50px;height:50px;border-radius:6px}</style>
+</head>
+<body>
+<div class="box">
+<h2>ادارة المنتجات - بدون باسورد</h2>
+<input id="n" placeholder="اسم المنتج"><input id="pr" placeholder="السعر"><input id="im" placeholder="رابط الصورة">
+<button onclick="add()">اضافة</button>
+<div id="list"></div>
+<a href="index.html">فتح المتجر</a>
+</div>
+<script>
+let a=JSON.parse(localStorage.getItem('alqima_products')||'[]');let e=-1;
+function r(){list.innerHTML='';a.forEach((x,i)=>{list.innerHTML+=`<div class="prod"><img src="${x.img}"><div style="flex:1">${x.name} - ${x.price}</div><button onclick="edit(${i})">تعديل</button><button onclick="del(${i})">حذف</button></div>`})}
+function add(){let name=n.value,price=pr.value,img=im.value;if(!name||!price||!img)return alert('عبي الكل');if(e>-1){a[e]={name,price,img};e=-1}else a.push({name,price,img});localStorage.setItem('alqima_products',JSON.stringify(a));n.value=pr.value=im.value='';r()}
+function del(i){a.splice(i,1);localStorage.setItem('alqima_products',JSON.stringify(a));r()}
+function edit(i){n.value=a[i].name;pr.value=a[i].price;im.value=a[i].img;e=i}
+r();
+</script>
+</body>
+</html>
